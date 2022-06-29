@@ -1,0 +1,10 @@
+.yarn
+.husky
+.next
+
+certificates
+coverage
+
+src/server/persistence/codegen
+
+.pnp.*

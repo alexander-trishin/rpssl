@@ -1,16 +1,13 @@
-import React, { Component } from 'react';
-import { Container } from 'reactstrap';
-import { NavMenu } from './NavMenu';
+import { MantineProvider } from '@mantine/core';
 
-export class Layout extends Component {
-    static displayName = Layout.name;
+const Layout = props => {
+    const { children } = props;
 
-    render() {
-        return (
-            <div>
-                <NavMenu />
-                <Container>{this.props.children}</Container>
-            </div>
-        );
-    }
-}
+    return (
+        <MantineProvider theme={{ colorScheme: 'dark' }} withGlobalStyles withNormalizeCSS>
+            {children}
+        </MantineProvider>
+    );
+};
+
+export default Layout;

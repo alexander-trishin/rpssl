@@ -1,51 +1,238 @@
-import React, { Component } from 'react';
+import {
+    Box,
+    Button,
+    Center,
+    createStyles,
+    Group,
+    Paper,
+    Select,
+    SimpleGrid,
+    Stack,
+    Text,
+    Title
+} from '@mantine/core';
+import { useEffect, useState } from 'react';
 
-export class Home extends Component {
-    static displayName = Home.name;
+const useHomeStyles = createStyles(theme => ({
+    root: {
+        position: 'fixed',
+        inset: 0
+    },
 
-    render() {
-        return (
-            <div>
-                <h1>Hello, world!</h1>
-                <p>Welcome to your new single-page application, built with:</p>
-                <ul>
-                    <li>
-                        <a href="https://get.asp.net/">ASP.NET Core</a> and{' '}
-                        <a href="https://msdn.microsoft.com/en-us/library/67ef8sbd.aspx">C#</a> for
-                        cross-platform server-side code
-                    </li>
-                    <li>
-                        <a href="https://facebook.github.io/react/">React</a> for client-side code
-                    </li>
-                    <li>
-                        <a href="http://getbootstrap.com/">Bootstrap</a> for layout and styling
-                    </li>
-                </ul>
-                <p>To help you get started, we have also set up:</p>
-                <ul>
-                    <li>
-                        <strong>Client-side navigation</strong>. For example, click <em>Counter</em>{' '}
-                        then <em>Back</em> to return here.
-                    </li>
-                    <li>
-                        <strong>Development server integration</strong>. In development mode, the
-                        development server from <code>create-react-app</code> runs in the background
-                        automatically, so your client-side resources are dynamically built on demand
-                        and the page refreshes when you modify any file.
-                    </li>
-                    <li>
-                        <strong>Efficient production builds</strong>. In production mode,
-                        development-time features are disabled, and your <code>dotnet publish</code>{' '}
-                        configuration produces minified, efficiently bundled JavaScript files.
-                    </li>
-                </ul>
-                <p>
-                    The <code>ClientApp</code> subdirectory is a standard React application based on
-                    the <code>create-react-app</code> template. If you open a command prompt in that
-                    directory, you can run <code>npm</code> commands such as <code>npm test</code>{' '}
-                    or <code>npm install</code>.
-                </p>
-            </div>
-        );
+    round: {
+        ...theme.headings.sizes.h3
+    },
+
+    roundResult: {
+        ...theme.headings.sizes.h4
+    },
+
+    grid: {
+        marginTop: theme.spacing.xl * 2,
+        marginBottom: theme.spacing.xl * 2
+    },
+
+    card: {
+        height: '100%'
     }
-}
+}));
+
+const Home = () => {
+    const { classes, theme } = useHomeStyles();
+
+    const [round, setRound] = useState(0);
+    const [roundResult, setRoundResult] = useState('vs');
+    const [roundResultColor, setRoundResultColor] = useState(theme.primaryColor);
+
+    const [choices, setChoices] = useState([]);
+
+    const [playerChoice, setPlayerChoice] = useState('');
+    const [computerChoice, setComputerChoice] = useState('Waiting for your selection...');
+
+    const [playerScore, setPlayerScore] = useState(0);
+    const [computerScore, setComputerScore] = useState(0);
+
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        let cancel = false;
+
+        const initialize = async () => {
+            const response = await fetch('api/choices');
+            const data = await response.json();
+
+            if (!cancel) {
+                setChoices(data.map(({ id, name }) => ({ value: id.toString(), label: name })));
+
+                setIsLoading(false);
+            }
+        };
+
+        initialize();
+
+        return () => {
+            cancel = true;
+        };
+    }, []);
+
+    const handlePlay = async () => {
+        setIsLoading(true);
+
+        try {
+            const response = await fetch('api/play', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    player: parseInt(playerChoice)
+                })
+            });
+
+            const { computer, results } = await response.json();
+
+            switch (results) {
+                case 'tie': {
+                    setRoundResult("It's a tie!");
+                    setRoundResultColor('gray');
+                    break;
+                }
+                case 'win': {
+                    setRoundResult('You won!');
+                    setRoundResultColor('green');
+                    setPlayerScore(prevScore => prevScore + 1);
+                    break;
+                }
+                case 'lose': {
+                    setRoundResult('You lost!');
+                    setRoundResultColor('red');
+                    setComputerScore(prevScore => prevScore + 1);
+                    break;
+                }
+                default:
+                    throw new Error(`Unknown result: ${results}`);
+            }
+
+            setComputerChoice(choices.find(choice => choice.value === computer.toString()).label);
+            setRound(prevRound => prevRound + 1);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const handleReset = () => {
+        setRound(0);
+        setRoundResult('vs');
+        setRoundResultColor(theme.primaryColor);
+
+        setPlayerChoice('');
+        setComputerChoice('Waiting for your selection...');
+
+        setPlayerScore(0);
+        setComputerScore(0);
+
+        setIsLoading(false);
+    };
+
+    return (
+        <Center className={classes.root}>
+            <Stack>
+                <Title order={1} color="#fff" align="center" mb={0}>
+                    Rock, Paper, Scissors, Spock, Lizard
+                </Title>
+
+                <Text
+                    className={classes.round}
+                    component="h2"
+                    color={theme.primaryColor}
+                    align="center"
+                    mt={0}
+                    mb="xl"
+                >
+                    {round ? `Round: ${round}` : 'No rounds yet!'}
+                </Text>
+
+                <Box className={classes.grid}>
+                    <SimpleGrid cols={3}>
+                        <Stack justify="center">
+                            <Paper
+                                className={classes.card}
+                                shadow="xl"
+                                radius="md"
+                                p="xl"
+                                withBorder
+                            >
+                                <Stack>
+                                    <Title order={5} align="center">
+                                        Player
+                                    </Title>
+                                    <Select
+                                        placeholder="Choose your move"
+                                        disabled={isLoading}
+                                        data={choices}
+                                        value={playerChoice}
+                                        onChange={setPlayerChoice}
+                                        my="xl"
+                                    />
+                                </Stack>
+                            </Paper>
+                        </Stack>
+
+                        <Center>
+                            <Text
+                                className={classes.roundResult}
+                                component="h4"
+                                color={roundResultColor}
+                                align="center"
+                            >
+                                {roundResult}
+                            </Text>
+                        </Center>
+
+                        <Stack>
+                            <Paper
+                                className={classes.card}
+                                shadow="xl"
+                                radius="md"
+                                p="xl"
+                                withBorder
+                            >
+                                <Stack>
+                                    <Title order={5} align="center">
+                                        Computer
+                                    </Title>
+                                    <Text align="center" my="xl">
+                                        {computerChoice}
+                                    </Text>
+                                </Stack>
+                            </Paper>
+                        </Stack>
+                    </SimpleGrid>
+
+                    <SimpleGrid cols={3} mt="xl">
+                        <Title order={3} align="center">
+                            {playerScore}
+                        </Title>
+                        <Box />
+                        <Title order={3} align="center">
+                            {computerScore}
+                        </Title>
+                    </SimpleGrid>
+                </Box>
+
+                <Center>
+                    <Group spacing="xl">
+                        <Button disabled={!playerChoice} loading={isLoading} onClick={handlePlay}>
+                            Play
+                        </Button>
+                        {round && (
+                            <Button variant="outline" disabled={isLoading} onClick={handleReset}>
+                                Reset
+                            </Button>
+                        )}
+                    </Group>
+                </Center>
+            </Stack>
+        </Center>
+    );
+};
+
+export default Home;

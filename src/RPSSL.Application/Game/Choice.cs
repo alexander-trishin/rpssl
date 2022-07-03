@@ -8,7 +8,7 @@
         public static readonly Choice Spock = new(4, "spock");
         public static readonly Choice Lizard = new(5, "lizard");
 
-        private Choice(int id, string name)
+        public Choice(int id, string name)
         {
             Id = id;
             Name = name;

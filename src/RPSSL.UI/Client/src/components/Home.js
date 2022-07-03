@@ -93,17 +93,22 @@ const Home = () => {
                 case 'tie': {
                     setRoundResult("It's a tie!");
                     setRoundResultColor('gray');
+
+                    setPlayerScore(prevScore => prevScore + 1);
+                    setComputerScore(prevScore => prevScore + 1);
                     break;
                 }
                 case 'win': {
                     setRoundResult('You won!');
                     setRoundResultColor('green');
+
                     setPlayerScore(prevScore => prevScore + 1);
                     break;
                 }
                 case 'lose': {
                     setRoundResult('You lost!');
                     setRoundResultColor('red');
+
                     setComputerScore(prevScore => prevScore + 1);
                     break;
                 }
@@ -135,7 +140,7 @@ const Home = () => {
     return (
         <Center className={classes.root}>
             <Stack>
-                <Title order={1} color="#fff" align="center" mb={0}>
+                <Title order={1} align="center" mb={0}>
                     Rock, Paper, Scissors, Spock, Lizard
                 </Title>
 
@@ -220,11 +225,11 @@ const Home = () => {
 
                 <Center>
                     <Group spacing="xl">
-                        <Button disabled={!playerChoice} loading={isLoading} onClick={handlePlay}>
+                        <Button size="md" disabled={!playerChoice} loading={isLoading} onClick={handlePlay}>
                             Play
                         </Button>
                         {round && (
-                            <Button variant="outline" disabled={isLoading} onClick={handleReset}>
+                            <Button size="md" variant="outline" disabled={isLoading} onClick={handleReset}>
                                 Reset
                             </Button>
                         )}

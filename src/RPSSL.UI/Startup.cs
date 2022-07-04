@@ -22,6 +22,8 @@ namespace RPSSL.UI;
 [ExcludeFromCodeCoverage]
 public class Startup
 {
+    private const string CodeChallengeCorsPolicy = nameof(CodeChallengeCorsPolicy);
+
     public void ConfigureServices(IServiceCollection services, IConfiguration configuration)
     {
         services
@@ -45,6 +47,17 @@ public class Startup
                 TimeSpan.FromSeconds(15),
                 TimeSpan.FromSeconds(45),
             }));
+
+        services.AddCors(cors =>
+        {
+            cors.AddPolicy(CodeChallengeCorsPolicy, policy =>
+            {
+                policy
+                    .WithOrigins(configuration["CodeChallengeUrl"])
+                    .AllowAnyHeader()
+                    .AllowAnyMethod();
+            });
+        });
 
         services.AddEndpointsApiExplorer();
 
@@ -80,6 +93,7 @@ public class Startup
         app.UseHttpsRedirection();
         app.UseStaticFiles();
         app.UseRouting();
+        app.UseCors(CodeChallengeCorsPolicy);
     }
 
     public void ConfigureEndpoints(IEndpointRouteBuilder endpoint)

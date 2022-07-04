@@ -1,4 +1,4 @@
-# Rock, Paper, Scissors, Lizard, Spock
+# Rock, Paper, Scissors, Spock, Lizard
  
 ## Overview
 

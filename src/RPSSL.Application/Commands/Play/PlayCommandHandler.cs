@@ -7,6 +7,8 @@ using MediatR;
 using RPSSL.Application.Game;
 using RPSSL.Infrastructure.Services;
 
+using static RPSSL.Application.Constants.Game.Result;
+
 namespace RPSSL.Application.Commands.Play;
 
 public sealed class PlayCommandHandler : IRequestHandler<PlayCommand, GameResults>
@@ -23,22 +25,32 @@ public sealed class PlayCommandHandler : IRequestHandler<PlayCommand, GameResult
     public async Task<GameResults> Handle(PlayCommand request, CancellationToken cancellationToken)
     {
         var playerChoice = _ruleBook.Choices.GetChoiceById(request.PlayerChoiceId);
+        var computerChoice = await GetComputerChoiceAsync(cancellationToken);
 
-        var computer = await _randomService.GetRandomAsync(cancellationToken);
-        var computerChoice = _ruleBook.Choices.GetChoiceByWeight(computer.RandomNumber);
-
-        var winner = _ruleBook.Evaluate(playerChoice, computerChoice);
-
-        var result = winner is null
-            ? "tie"
-            : winner == playerChoice
-                ? "win"
-                : "lose";
+        var result = Play(playerChoice, computerChoice);
 
         return new GameResults
         {
             ComputerChoiceId = computerChoice.Id,
             Result = result
         };
+    }
+
+    private async Task<Choice> GetComputerChoiceAsync(CancellationToken cancellationToken)
+    {
+        var computer = await _randomService.GetRandomAsync(cancellationToken);
+
+        return _ruleBook.Choices.GetChoiceByWeight(computer.RandomNumber);
+    }
+
+    private string Play(Choice playerChoice, Choice computerChoice)
+    {
+        var winner = _ruleBook.Evaluate(playerChoice, computerChoice);
+
+        return winner is null
+            ? Tie
+            : winner == playerChoice
+                ? Win
+                : Lose;
     }
 }

@@ -53,7 +53,7 @@ public class Startup
             cors.AddPolicy(CodeChallengeCorsPolicy, policy =>
             {
                 policy
-                    .WithOrigins(configuration["CodeChallengeUrl"])
+                    .WithOrigins(configuration[Constants.Settings.CodeChallengeUrl])
                     .AllowAnyHeader()
                     .AllowAnyMethod();
             });
@@ -72,7 +72,7 @@ public class Startup
 
         services.AddTransient<IRandomService>(provider =>
         {
-            var httpClient = CreateHttpClient(provider, configuration["CodeChallengeUrl"]);
+            var httpClient = CreateHttpClient(provider, configuration[Constants.Settings.CodeChallengeUrl]);
 
             return new RandomService(httpClient);
         });

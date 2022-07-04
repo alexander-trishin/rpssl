@@ -1,12 +1,14 @@
-﻿namespace RPSSL.Application.Game
+﻿using static RPSSL.Application.Constants.Game.Choice;
+
+namespace RPSSL.Application.Game
 {
     public sealed class Choice
     {
-        public static readonly Choice Rock = new(1, "rock");
-        public static readonly Choice Paper = new(2, "paper");
-        public static readonly Choice Scissors = new(3, "scissors");
-        public static readonly Choice Spock = new(4, "spock");
-        public static readonly Choice Lizard = new(5, "lizard");
+        public static readonly Choice Rock = new(RockId, RockName);
+        public static readonly Choice Paper = new(PaperId, PaperName);
+        public static readonly Choice Scissors = new(ScissorsId, ScissorsName);
+        public static readonly Choice Spock = new(SpockId, SpockName);
+        public static readonly Choice Lizard = new(LizardId, LizardName);
 
         public Choice(int id, string name)
         {

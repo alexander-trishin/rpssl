@@ -12,7 +12,8 @@ import {
     Text,
     Title
 } from '@mantine/core';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import Scoreboard from './Scoreboard';
 
 const useHomeStyles = createStyles(theme => ({
     root: {
@@ -56,6 +57,25 @@ const Home = () => {
 
     const [isLoading, setIsLoading] = useState(true);
 
+    const getChoiceLabelByValue = value => {
+        return choices.find(choice => choice.value === value.toString())?.label;
+    };
+
+    const [showScoreboard, setShowScoreboard] = useState(false);
+    const [scoreboard, setScoreboard] = useState([]);
+
+    const toggleScoreboard = () => setShowScoreboard(prevShow => !prevShow);
+
+    const scoreRef = useRef({});
+    scoreRef.current = {
+        round,
+        playerChoice: playerChoice && getChoiceLabelByValue(playerChoice),
+        computerChoice,
+        result: roundResult,
+        playerScore,
+        computerScore
+    };
+
     useEffect(() => {
         let cancel = false;
 
@@ -79,6 +99,12 @@ const Home = () => {
             cancel = true;
         };
     }, []);
+
+    useEffect(() => {
+        if (round > 0) {
+            setScoreboard(prevScoreboard => [...prevScoreboard, scoreRef.current]);
+        }
+    }, [round]);
 
     const handlePlay = async () => {
         setIsLoading(true);
@@ -118,7 +144,7 @@ const Home = () => {
                     throw new Error(`Unknown result: ${results}`);
             }
 
-            setComputerChoice(choices.find(choice => choice.value === computer.toString()).label);
+            setComputerChoice(getChoiceLabelByValue(computer));
             setRound(prevRound => prevRound + 1);
         } finally {
             setIsLoading(false);
@@ -137,6 +163,8 @@ const Home = () => {
         setComputerScore(0);
 
         setIsLoading(false);
+
+        setScoreboard([]);
     };
 
     return (
@@ -242,18 +270,30 @@ const Home = () => {
                             Play
                         </Button>
                         {round && (
-                            <Button
-                                size="md"
-                                variant="outline"
-                                disabled={isLoading}
-                                onClick={handleReset}
-                            >
-                                Reset
-                            </Button>
+                            <>
+                                <Button
+                                    size="md"
+                                    variant="light"
+                                    disabled={isLoading}
+                                    onClick={() => toggleScoreboard()}
+                                >
+                                    Scoreboard
+                                </Button>
+                                <Button
+                                    size="md"
+                                    variant="outline"
+                                    disabled={isLoading}
+                                    onClick={handleReset}
+                                >
+                                    Reset
+                                </Button>
+                            </>
                         )}
                     </Group>
                 </Center>
             </Stack>
+
+            <Scoreboard opened={showScoreboard} onClose={toggleScoreboard} value={scoreboard} />
         </Center>
     );
 };

@@ -4,8 +4,9 @@ import {
     Center,
     createStyles,
     Group,
+    Loader,
     Paper,
-    Select,
+    SegmentedControl,
     SimpleGrid,
     Stack,
     Text,
@@ -33,7 +34,8 @@ const useHomeStyles = createStyles(theme => ({
     },
 
     card: {
-        height: '100%'
+        height: '100%',
+        minWidth: 250
     }
 }));
 
@@ -62,7 +64,10 @@ const Home = () => {
             const data = await response.json();
 
             if (!cancel) {
-                setChoices(data.map(({ id, name }) => ({ value: id.toString(), label: name })));
+                const items = data.map(({ id, name }) => ({ value: id.toString(), label: name }));
+
+                setChoices(items);
+                setPlayerChoice(items[0].value);
 
                 setIsLoading(false);
             }
@@ -93,9 +98,6 @@ const Home = () => {
                 case 'tie': {
                     setRoundResult("It's a tie!");
                     setRoundResultColor('gray');
-
-                    setPlayerScore(prevScore => prevScore + 1);
-                    setComputerScore(prevScore => prevScore + 1);
                     break;
                 }
                 case 'win': {
@@ -128,7 +130,7 @@ const Home = () => {
         setRoundResult('vs');
         setRoundResultColor(theme.primaryColor);
 
-        setPlayerChoice('');
+        setPlayerChoice(choices[0].value);
         setComputerChoice('Waiting for your selection...');
 
         setPlayerScore(0);
@@ -165,18 +167,24 @@ const Home = () => {
                                 p="xl"
                                 withBorder
                             >
-                                <Stack>
+                                <Stack align="center">
                                     <Title order={5} align="center">
                                         Player
                                     </Title>
-                                    <Select
-                                        placeholder="Choose your move"
-                                        disabled={isLoading}
-                                        data={choices}
-                                        value={playerChoice}
-                                        onChange={setPlayerChoice}
-                                        my="xl"
-                                    />
+                                    {choices.length > 0 ? (
+                                        <SegmentedControl
+                                            color={theme.primaryColor}
+                                            orientation="vertical"
+                                            disabled={isLoading}
+                                            data={choices}
+                                            value={playerChoice}
+                                            onChange={setPlayerChoice}
+                                            transitionDuration={300}
+                                            my="xl"
+                                        />
+                                    ) : (
+                                        <Loader size="xl" />
+                                    )}
                                 </Stack>
                             </Paper>
                         </Stack>
@@ -225,11 +233,21 @@ const Home = () => {
 
                 <Center>
                     <Group spacing="xl">
-                        <Button size="md" disabled={!playerChoice} loading={isLoading} onClick={handlePlay}>
+                        <Button
+                            size="md"
+                            disabled={!playerChoice}
+                            loading={isLoading}
+                            onClick={handlePlay}
+                        >
                             Play
                         </Button>
                         {round && (
-                            <Button size="md" variant="outline" disabled={isLoading} onClick={handleReset}>
+                            <Button
+                                size="md"
+                                variant="outline"
+                                disabled={isLoading}
+                                onClick={handleReset}
+                            >
                                 Reset
                             </Button>
                         )}

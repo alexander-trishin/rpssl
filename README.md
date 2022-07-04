@@ -10,8 +10,13 @@ and implements [CQRS](https://docs.microsoft.com/en-us/azure/architecture/patter
 - _FluentValidation_ - used for request validation;
 - _Swashbuckle.AspNetCore_ - Swagger page generator for RestAPI.
 
+### Prerequisites
+The solution requires a self-signed dev certificate that can be generated using Visual Studio or using terminal
+[[Reference](https://docs.microsoft.com/en-us/dotnet/core/additional-tools/self-signed-certificates-guide#create-a-self-signed-certificate)].
+
 ### Local Development (with Visual Studio)
 - Open solution.
+- Make sure that project `RPSSL.UI` is set as a startup project.
 - Choose `Start Debugging` or `Start without Debugging` on `Debug` panel.
 - After a while browser window with main UI should open.
 - UI for swagger will be available at `/swagger` endpoint.

@@ -31,6 +31,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\RPSSL.UI\RPSSL.UI.csproj" />
+    <ProjectReference Include="..\..\src\RPSSL.Application\RPSSL.Application.csproj" />
   </ItemGroup>
 </Project>

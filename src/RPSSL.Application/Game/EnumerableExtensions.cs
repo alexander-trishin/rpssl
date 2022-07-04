@@ -24,8 +24,9 @@ public static class EnumerableExtensions
         }
 
         const int MaxWeight = 100;
+        const int ChoiceCount = 5;
 
-        var id = (int)Math.Ceiling((decimal)weight / (MaxWeight / choices.Count));
+        var id = (int)Math.Ceiling((decimal)weight / (MaxWeight / ChoiceCount));
 
         return choices.First(choice => choice.Id == id);
     }

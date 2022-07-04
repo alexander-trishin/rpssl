@@ -29,6 +29,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{
 		.github\workflows\run-dotnet-tests.yml = .github\workflows\run-dotnet-tests.yml
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RPSSL.Application.UnitTests", "tests\RPSSL.Application.UnitTests\RPSSL.Application.UnitTests.csproj", "{0062F410-2213-4E5F-BC5D-5A38A5518678}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +53,10 @@ Global
 		{99B1DF75-2111-4825-803E-5492AC443BD7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{99B1DF75-2111-4825-803E-5492AC443BD7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{99B1DF75-2111-4825-803E-5492AC443BD7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0062F410-2213-4E5F-BC5D-5A38A5518678}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0062F410-2213-4E5F-BC5D-5A38A5518678}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0062F410-2213-4E5F-BC5D-5A38A5518678}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0062F410-2213-4E5F-BC5D-5A38A5518678}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -62,5 +68,6 @@ Global
 		{1A11F32A-C078-48EF-959D-B8964EF98DFC} = {D97989FE-DAC8-48A2-B74E-5F3B627F091D}
 		{B7850065-489E-492E-954E-CB65610B5B7C} = {5C53D480-FA4F-426F-A448-655556BB782F}
 		{2147CE2E-6136-492C-A92E-D9CD4C94848D} = {B7850065-489E-492E-954E-CB65610B5B7C}
+		{0062F410-2213-4E5F-BC5D-5A38A5518678} = {D97989FE-DAC8-48A2-B74E-5F3B627F091D}
 	EndGlobalSection
 EndGlobal

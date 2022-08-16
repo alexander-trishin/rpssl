@@ -24,12 +24,14 @@ public sealed class PlayController : ControllerBase
     }
 
     /// <summary>
-    /// Plays a round against a computer opponent.
+    ///     Plays a round against a computer opponent.
     /// </summary>
     [HttpPost]
     [ProducesResponseType(typeof(PostPlayResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> Post([BindRequired, FromBody] PostPlayBody body, CancellationToken cancellationToken)
+    public async Task<IActionResult> Post(
+        [BindRequired][FromBody] PostPlayBody body,
+        CancellationToken cancellationToken)
     {
         var command = new PlayCommand { PlayerChoiceId = body.Player.Value };
 

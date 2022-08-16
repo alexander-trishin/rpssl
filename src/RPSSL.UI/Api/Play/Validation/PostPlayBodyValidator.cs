@@ -24,7 +24,7 @@ public sealed class PostPlayBodyValidator : AbstractValidator<PostPlayBody>
         {
             RuleFor(x => x.Player)
                 .Must(x => _ruleBook.Choices.Any(choice => choice.Id == x.Value))
-                    .WithMessage(x => $"Failed to find a choice with id '${x.Player}'.");
+                .WithMessage(x => $"Failed to find a choice with id '${x.Player}'.");
         });
     }
 }

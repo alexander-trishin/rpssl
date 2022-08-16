@@ -1,10 +1,9 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 
-namespace RPSSL.Infrastructure.Services
+namespace RPSSL.Infrastructure.Services;
+
+public interface IRandomService
 {
-    public interface IRandomService
-    {
-        Task<GetRandomResponse> GetRandomAsync(CancellationToken cancellationToken = default);
-    }
+    Task<GetRandomResponse> GetRandomAsync(CancellationToken cancellationToken = default);
 }

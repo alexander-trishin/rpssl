@@ -31,4 +31,3 @@ public static class EnumerableExtensions
         return choices.First(choice => choice.Id == id);
     }
 }
-

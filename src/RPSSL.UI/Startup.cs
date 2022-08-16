@@ -40,12 +40,12 @@ public class Startup
 
         services
             .AddHttpClient(string.Empty)
-            .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler() { UseCookies = false })
+            .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler { UseCookies = false })
             .AddTransientHttpErrorPolicy(builder => builder.WaitAndRetryAsync(new[]
             {
                 TimeSpan.FromSeconds(5),
                 TimeSpan.FromSeconds(15),
-                TimeSpan.FromSeconds(45),
+                TimeSpan.FromSeconds(45)
             }));
 
         services.AddCors(cors =>

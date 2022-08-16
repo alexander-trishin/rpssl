@@ -23,7 +23,7 @@ public sealed class ChoicesController : ControllerBase
     }
 
     /// <summary>
-    /// Gets the list of all possible choices.
+    ///     Gets the list of all possible choices.
     /// </summary>
     [HttpGet]
     [ProducesResponseType(typeof(IEnumerable<GetChoicesResponse>), StatusCodes.Status200OK)]

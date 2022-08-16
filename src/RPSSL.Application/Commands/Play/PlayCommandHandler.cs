@@ -13,8 +13,8 @@ namespace RPSSL.Application.Commands.Play;
 
 public sealed class PlayCommandHandler : IRequestHandler<PlayCommand, GameResults>
 {
-    private readonly IRuleBook _ruleBook;
     private readonly IRandomService _randomService;
+    private readonly IRuleBook _ruleBook;
 
     public PlayCommandHandler(IRuleBook ruleBook, IRandomService randomService)
     {

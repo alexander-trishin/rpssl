@@ -1,10 +1,6 @@
-﻿using FluentAssertions;
-
-using MediatR;
+﻿using MediatR;
 
 using Microsoft.AspNetCore.Mvc;
-
-using Moq;
 
 using RPSSL.Application.Queries.GetChoices;
 using RPSSL.UI.Api.Choices;
@@ -48,4 +44,3 @@ public class ChoicesControllerTests
         actual.Value.Should().BeEquivalentTo(expectedChoices);
     }
 }
-

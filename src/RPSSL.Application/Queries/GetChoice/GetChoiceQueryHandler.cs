@@ -11,8 +11,8 @@ namespace RPSSL.Application.Queries.GetChoice;
 
 public sealed class GetChoiceQueryHandler : IRequestHandler<GetChoiceQuery, Choice>
 {
-    private readonly IRuleBook _ruleBook;
     private readonly IRandomService _randomService;
+    private readonly IRuleBook _ruleBook;
 
     public GetChoiceQueryHandler(IRuleBook ruleBook, IRandomService randomService)
     {

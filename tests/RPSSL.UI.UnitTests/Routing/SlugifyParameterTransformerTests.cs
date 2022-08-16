@@ -1,6 +1,4 @@
-﻿using FluentAssertions;
-
-using RPSSL.UI.Routing;
+﻿using RPSSL.UI.Routing;
 
 namespace RPSSL.UI.UnitTests.Routing;
 
@@ -10,9 +8,9 @@ public class SlugifyParameterTransformerTests
     {
         get
         {
-            yield return new string[] { "CamelCase", "camel-case" };
-            yield return new string[] { "DynamoDB", "dynamo-db" };
-            yield return new string[] { string.Empty, string.Empty };
+            yield return new[] { "CamelCase", "camel-case" };
+            yield return new[] { "DynamoDB", "dynamo-db" };
+            yield return new[] { string.Empty, string.Empty };
             yield return new string[] { null, null };
         }
     }
@@ -31,4 +29,3 @@ public class SlugifyParameterTransformerTests
         actual.Should().Be(expected);
     }
 }
-

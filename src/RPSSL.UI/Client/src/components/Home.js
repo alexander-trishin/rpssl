@@ -12,7 +12,7 @@ import {
     Text,
     Title
 } from '@mantine/core';
-import { useEffect, useRef, useState } from 'react';
+import {useEffect, useRef, useState} from 'react';
 import Scoreboard from './Scoreboard';
 
 const useHomeStyles = createStyles(theme => ({
@@ -211,7 +211,7 @@ const Home = () => {
                                             my="xl"
                                         />
                                     ) : (
-                                        <Loader size="xl" />
+                                        <Loader size="xl"/>
                                     )}
                                 </Stack>
                             </Paper>
@@ -252,7 +252,7 @@ const Home = () => {
                         <Title order={3} align="center">
                             {playerScore}
                         </Title>
-                        <Box />
+                        <Box/>
                         <Title order={3} align="center">
                             {computerScore}
                         </Title>
@@ -293,7 +293,7 @@ const Home = () => {
                 </Center>
             </Stack>
 
-            <Scoreboard opened={showScoreboard} onClose={toggleScoreboard} value={scoreboard} />
+            <Scoreboard opened={showScoreboard} onClose={toggleScoreboard} value={scoreboard}/>
         </Center>
     );
 };

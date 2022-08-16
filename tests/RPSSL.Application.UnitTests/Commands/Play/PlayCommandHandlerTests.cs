@@ -1,8 +1,4 @@
-﻿using FluentAssertions;
-
-using Moq;
-
-using RPSSL.Application.Commands.Play;
+﻿using RPSSL.Application.Commands.Play;
 using RPSSL.Application.Game;
 using RPSSL.Infrastructure.Services;
 

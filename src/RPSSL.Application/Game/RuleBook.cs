@@ -6,11 +6,11 @@ public sealed class RuleBook : IRuleBook
 {
     private readonly Dictionary<Choice, List<Choice>> _map = new()
     {
-        { Choice.Rock, new() { Choice.Scissors, Choice.Lizard } },
-        { Choice.Paper, new() { Choice.Rock, Choice.Spock } },
-        { Choice.Scissors, new() { Choice.Paper, Choice.Lizard } },
-        { Choice.Spock, new() { Choice.Rock, Choice.Scissors } },
-        { Choice.Lizard, new() { Choice.Paper, Choice.Spock } }
+        { Choice.Rock, new List<Choice> { Choice.Scissors, Choice.Lizard } },
+        { Choice.Paper, new List<Choice> { Choice.Rock, Choice.Spock } },
+        { Choice.Scissors, new List<Choice> { Choice.Paper, Choice.Lizard } },
+        { Choice.Spock, new List<Choice> { Choice.Rock, Choice.Scissors } },
+        { Choice.Lizard, new List<Choice> { Choice.Paper, Choice.Spock } }
     };
 
     public IReadOnlyCollection<Choice> Choices => _map.Keys;

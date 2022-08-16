@@ -23,7 +23,7 @@ public sealed class ChoiceController : ControllerBase
     }
 
     /// <summary>
-    /// Gets a randomly generated choice.
+    ///     Gets a randomly generated choice.
     /// </summary>
     [HttpGet]
     [ProducesResponseType(typeof(GetChoiceResponse), StatusCodes.Status200OK)]

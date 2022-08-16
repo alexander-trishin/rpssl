@@ -149,6 +149,15 @@ dotnet_naming_rule.constant_fields_should_be_pascal_case.symbols = constant_fiel
 dotnet_naming_rule.constant_fields_should_be_pascal_case.style = pascal_case_style
 dotnet_naming_rule.constant_fields_should_be_pascal_case.severity = warning
 
+# Name all static fields using PascalCase
+dotnet_naming_symbols.static_fields.applicable_kinds = field
+dotnet_naming_symbols.static_fields.applicable_accessibilities = *
+dotnet_naming_symbols.static_fields.required_modifiers = static
+
+dotnet_naming_rule.static_fields_should_be_pascal_case.symbols = static_fields
+dotnet_naming_rule.static_fields_should_be_pascal_case.style = pascal_case_style
+dotnet_naming_rule.static_fields_should_be_pascal_case.severity = warning
+
 # Name all private and protected instance fields using _camelCase
 dotnet_naming_symbols.private_and_protected_fields.applicable_kinds = field
 dotnet_naming_symbols.private_and_protected_fields.applicable_accessibilities = private, protected, private_protected
@@ -476,7 +485,7 @@ resharper_csharp_place_simple_case_statement_on_same_line = never
 # [Line Breaks and Wrapping] Arrangement of Embedded Blocks
 resharper_csharp_keep_existing_embedded_block_arrangement = false
 resharper_csharp_place_simple_embedded_block_on_same_line = false
-resharper_csharp_place_simple_anonymousmethod_on_single_line = true
+resharper_csharp_place_simple_anonymousmethod_on_single_line = false
 
 # [Line Breaks and Wrapping] Arrangement of Switch Expressions
 resharper_csharp_keep_existing_switch_expression_arrangement = false

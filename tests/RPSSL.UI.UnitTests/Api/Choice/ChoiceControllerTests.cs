@@ -3,7 +3,7 @@
 using Microsoft.AspNetCore.Mvc;
 
 using RPSSL.Application.Queries.GetChoice;
-using RPSSL.UI.Api.Choice;
+using RPSSL.UI.Api.v1.Choice;
 
 namespace RPSSL.UI.UnitTests.Api.Choice;
 

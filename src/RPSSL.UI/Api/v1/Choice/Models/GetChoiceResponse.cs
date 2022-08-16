@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace RPSSL.UI.Api.Choices.Models;
+namespace RPSSL.UI.Api.v1.Choice.Models;
 
-public sealed class GetChoicesResponse
+public sealed class GetChoiceResponse
 {
     /// <summary>
     ///     The unique choice id.

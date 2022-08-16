@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 
@@ -11,13 +12,33 @@ namespace RPSSL.UI.Swagger;
 [ExcludeFromCodeCoverage]
 public class ConfigureSwaggerGenOptions : IConfigureOptions<SwaggerGenOptions>
 {
+    private readonly IApiVersionDescriptionProvider _provider;
+
+    public ConfigureSwaggerGenOptions(IApiVersionDescriptionProvider provider)
+    {
+        _provider = provider ?? throw new ArgumentNullException(nameof(provider));
+    }
+
     public void Configure(SwaggerGenOptions options)
     {
-        options.SwaggerDoc("v1", new OpenApiInfo
+        foreach (var description in _provider.ApiVersionDescriptions)
         {
-            Version = "v1",
+            options.SwaggerDoc(description.GroupName, CreateVersionInfo(description));
+        }
+
+        var xmlFileName = Assembly.GetExecutingAssembly().GetName().Name;
+        var xmlFilePath = Path.Combine(AppContext.BaseDirectory, $"{xmlFileName}.xml");
+
+        options.IncludeXmlComments(xmlFilePath);
+    }
+
+    private static OpenApiInfo CreateVersionInfo(ApiVersionDescription description)
+    {
+        var info = new OpenApiInfo
+        {
             Title = Constants.AppName,
             Description = "An API for 'Rock, Paper, Scissors, Lizard, Spock' game.",
+            Version = description.ApiVersion.ToString(),
             Contact = new OpenApiContact
             {
                 Name = "GitHub Repository",
@@ -28,11 +49,13 @@ public class ConfigureSwaggerGenOptions : IConfigureOptions<SwaggerGenOptions>
                 Name = "MIT License",
                 Url = new Uri("https://github.com/alexander-trishin/rpssl/blob/master/LICENSE")
             }
-        });
+        };
 
-        var xmlFileName = Assembly.GetExecutingAssembly().GetName().Name;
-        var xmlFilePath = Path.Combine(AppContext.BaseDirectory, $"{xmlFileName}.xml");
+        if (description.IsDeprecated)
+        {
+            info.Description += " This API version has been deprecated.";
+        }
 
-        options.IncludeXmlComments(xmlFilePath);
+        return info;
     }
 }

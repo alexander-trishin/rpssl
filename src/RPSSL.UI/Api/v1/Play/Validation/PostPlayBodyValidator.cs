@@ -1,9 +1,9 @@
 ﻿using FluentValidation;
 
 using RPSSL.Application.Game;
-using RPSSL.UI.Api.Play.Models;
+using RPSSL.UI.Api.v1.Play.Models;
 
-namespace RPSSL.UI.Api.Play.Validation;
+namespace RPSSL.UI.Api.v1.Play.Validation;
 
 public sealed class PostPlayBodyValidator : AbstractValidator<PostPlayBody>
 {

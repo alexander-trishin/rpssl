@@ -8,7 +8,10 @@ using MediatR;
 
 using MicroElements.Swashbuckle.FluentValidation.AspNetCore;
 
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
+using Microsoft.AspNetCore.Mvc.Versioning;
 
 using Polly;
 
@@ -22,10 +25,30 @@ namespace RPSSL.UI;
 [ExcludeFromCodeCoverage]
 public class Startup
 {
-    private const string CodeChallengeCorsPolicy = nameof(CodeChallengeCorsPolicy);
+    private readonly IConfiguration _configuration;
 
-    public void ConfigureServices(IServiceCollection services, IConfiguration configuration)
+    public Startup(IConfiguration configuration)
     {
+        _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+    }
+
+    public void ConfigureServices(IServiceCollection services)
+    {
+        services
+            .AddApiVersioning(options =>
+            {
+                options.DefaultApiVersion = new ApiVersion(1, 0);
+                options.AssumeDefaultVersionWhenUnspecified = true;
+
+                options.ReportApiVersions = true;
+                options.ApiVersionReader = new UrlSegmentApiVersionReader();
+            })
+            .AddVersionedApiExplorer(options =>
+            {
+                options.GroupNameFormat = "'v'VVV";
+                options.SubstituteApiVersionInUrl = true;
+            });
+
         services
             .AddControllersWithViews(options =>
             {
@@ -50,10 +73,10 @@ public class Startup
 
         services.AddCors(cors =>
         {
-            cors.AddPolicy(CodeChallengeCorsPolicy, policy =>
+            cors.AddPolicy(Constants.CorsPolicy.CodeChallenge, policy =>
             {
                 policy
-                    .WithOrigins(configuration[Constants.Settings.CodeChallengeUrl])
+                    .WithOrigins(_configuration[Constants.Settings.CodeChallengeUrl])
                     .AllowAnyHeader()
                     .AllowAnyMethod();
             });
@@ -72,18 +95,17 @@ public class Startup
 
         services.AddTransient<IRandomService>(provider =>
         {
-            var httpClient = CreateHttpClient(provider, configuration[Constants.Settings.CodeChallengeUrl]);
+            var httpClient = CreateHttpClient(provider, _configuration[Constants.Settings.CodeChallengeUrl]);
 
             return new RandomService(httpClient);
         });
     }
 
-    public void ConfigureApplication(IApplicationBuilder app, IWebHostEnvironment env)
+    public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IApiVersionDescriptionProvider provider)
     {
         if (env.IsDevelopment())
         {
-            app.UseSwagger();
-            app.UseSwaggerUI();
+            app.UseDeveloperExceptionPage();
         }
         else
         {
@@ -92,14 +114,26 @@ public class Startup
 
         app.UseHttpsRedirection();
         app.UseStaticFiles();
-        app.UseRouting();
-        app.UseCors(CodeChallengeCorsPolicy);
-    }
 
-    public void ConfigureEndpoints(IEndpointRouteBuilder endpoint)
-    {
-        endpoint.MapControllers();
-        endpoint.MapSwagger();
+        app.UseRouting();
+        app.UseCors(Constants.CorsPolicy.CodeChallenge);
+
+        app.UseSwagger();
+        app.UseSwaggerUI(options =>
+        {
+            foreach (var description in provider.ApiVersionDescriptions)
+            {
+                options.SwaggerEndpoint(
+                    $"/swagger/{description.GroupName}/swagger.json",
+                    description.GroupName
+                );
+            }
+        });
+
+        app.UseEndpoints(endpoint =>
+        {
+            endpoint.MapControllers();
+        });
     }
 
     private static HttpClient CreateHttpClient(IServiceProvider provider, string baseAddress)

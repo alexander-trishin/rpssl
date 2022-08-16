@@ -4,37 +4,37 @@ using MediatR;
 
 using Microsoft.AspNetCore.Mvc;
 
-using RPSSL.Application.Queries.GetChoices;
-using RPSSL.UI.Api.Choices.Models;
+using RPSSL.Application.Queries.GetChoice;
+using RPSSL.UI.Api.v1.Choice.Models;
 
-namespace RPSSL.UI.Api.Choices;
+namespace RPSSL.UI.Api.v1.Choice;
 
 [ApiController]
 [Route("api/[controller]")]
 [Consumes(MediaTypeNames.Application.Json)]
 [Produces(MediaTypeNames.Application.Json)]
-public sealed class ChoicesController : ControllerBase
+public sealed class ChoiceController : ControllerBase
 {
     private readonly ISender _mediator;
 
-    public ChoicesController(ISender mediator)
+    public ChoiceController(ISender mediator)
     {
         _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
     }
 
     /// <summary>
-    ///     Gets the list of all possible choices.
+    ///     Gets a randomly generated choice.
     /// </summary>
     [HttpGet]
-    [ProducesResponseType(typeof(IEnumerable<GetChoicesResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(GetChoiceResponse), StatusCodes.Status200OK)]
     public async Task<IActionResult> Get(CancellationToken cancellationToken)
     {
-        var results = await _mediator.Send(new GetChoicesQuery(), cancellationToken);
+        var result = await _mediator.Send(new GetChoiceQuery(), cancellationToken);
 
-        return Ok(results.Select(result => new GetChoicesResponse
+        return Ok(new GetChoiceResponse
         {
             Id = result.Id,
             Name = result.Name
-        }));
+        });
     }
 }

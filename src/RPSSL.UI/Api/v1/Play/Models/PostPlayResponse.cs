@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace RPSSL.UI.Api.Play.Models;
+namespace RPSSL.UI.Api.v1.Play.Models;
 
 public sealed class PostPlayResponse
 {

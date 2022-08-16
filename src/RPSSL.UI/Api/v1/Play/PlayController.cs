@@ -6,9 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 using RPSSL.Application.Commands.Play;
-using RPSSL.UI.Api.Play.Models;
+using RPSSL.UI.Api.v1.Play.Models;
 
-namespace RPSSL.UI.Api.Choice;
+namespace RPSSL.UI.Api.v1.Play;
 
 [ApiController]
 [Route("api/[controller]")]

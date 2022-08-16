@@ -1,13 +1,15 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
+
 using Serilog;
 
 namespace RPSSL.UI;
 
 [ExcludeFromCodeCoverage]
-public sealed class Program
+public static class Program
 {
-    public static void Main(string[] args)
+    public static async Task Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
 
@@ -19,22 +21,24 @@ public sealed class Program
         {
             Log.Information("Web application is starting...");
 
-            var startup = new Startup();
+            var startup = new Startup(builder.Configuration);
 
-            startup.ConfigureServices(builder.Services, builder.Configuration);
+            startup.ConfigureServices(builder.Services);
 
             var app = builder.Build();
 
-            startup.ConfigureApplication(app, app.Environment);
-            startup.ConfigureEndpoints(app);
+            var env = app.Environment;
+            var provider = app.Services.GetRequiredService<IApiVersionDescriptionProvider>();
 
-            Log.Information("Web application is ready!");
+            startup.Configure(app, env, provider);
 
-            app.Run();
+            Log.Information("Web application is ready");
+
+            await app.RunAsync();
         }
         catch (Exception exception)
         {
-            Log.Fatal(exception, "Unhandled exception!");
+            Log.Fatal(exception, "An unhandled exception occured...");
 
             throw;
         }

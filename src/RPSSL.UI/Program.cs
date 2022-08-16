@@ -3,6 +3,7 @@
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 
 using Serilog;
+using Serilog.Core;
 
 namespace RPSSL.UI;
 
@@ -12,39 +13,52 @@ public static class Program
     public static async Task Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
-
-        Log.Logger = new LoggerConfiguration()
-            .ReadFrom.Configuration(builder.Configuration)
-            .CreateLogger();
+        using var logger = CreateLogger(builder);
 
         try
         {
-            Log.Information("Web application is starting...");
+            logger.Information("Starting the web application...");
 
-            var startup = new Startup(builder.Configuration);
+            await using var app = BuildWebApplication(builder);
 
-            startup.ConfigureServices(builder.Services);
-
-            var app = builder.Build();
-
-            var env = app.Environment;
-            var provider = app.Services.GetRequiredService<IApiVersionDescriptionProvider>();
-
-            startup.Configure(app, env, provider);
-
-            Log.Information("Web application is ready");
+            logger.Information("The web application is ready");
 
             await app.RunAsync();
         }
         catch (Exception exception)
         {
-            Log.Fatal(exception, "An unhandled exception occured...");
+            logger.Fatal(exception, "An unhandled exception occured...");
 
             throw;
         }
-        finally
-        {
-            Log.CloseAndFlush();
-        }
+    }
+
+    private static Logger CreateLogger(WebApplicationBuilder builder)
+    {
+        var logger = new LoggerConfiguration()
+            .ReadFrom.Configuration(builder.Configuration)
+            .CreateLogger();
+
+        builder.Host.UseSerilog(logger, true);
+
+        return logger;
+    }
+
+    private static WebApplication BuildWebApplication(WebApplicationBuilder builder)
+    {
+        var startup = new Startup(builder.Configuration);
+
+        startup.ConfigureServices(builder.Services);
+
+        var app = builder.Build();
+        using var startupScope = app.Services.CreateScope();
+
+        var apiVersionProvider = startupScope
+            .ServiceProvider
+            .GetRequiredService<IApiVersionDescriptionProvider>();
+
+        startup.Configure(app, app.Environment, apiVersionProvider);
+
+        return app;
     }
 }

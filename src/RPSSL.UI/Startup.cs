@@ -82,14 +82,12 @@ public class Startup
             });
         });
 
-        services.AddEndpointsApiExplorer();
-
         services
             .ConfigureOptions<ConfigureSwaggerGenOptions>()
             .AddSwaggerGen()
             .AddFluentValidationRulesToSwagger();
 
-        services.AddMediatR(typeof(IRuleBook));
+        services.AddMediatR(typeof(Application.Constants));
 
         services.AddTransient<IRuleBook, RuleBook>();
 
@@ -118,7 +116,12 @@ public class Startup
         app.UseRouting();
         app.UseCors(Constants.CorsPolicy.CodeChallenge);
 
-        app.UseSwagger();
+        app.UseEndpoints(endpoint =>
+        {
+            endpoint.MapControllers();
+            endpoint.MapSwagger();
+        });
+
         app.UseSwaggerUI(options =>
         {
             foreach (var description in provider.ApiVersionDescriptions)
@@ -128,11 +131,6 @@ public class Startup
                     description.GroupName
                 );
             }
-        });
-
-        app.UseEndpoints(endpoint =>
-        {
-            endpoint.MapControllers();
         });
     }
 
